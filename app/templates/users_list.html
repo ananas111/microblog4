@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Interviewers </h1>
+    <hr>
+    {% for q in users %}
+    <p>
+    {{ q.username }} : <b>{{ q.first_name }} {{ q.last_name }}</b>
+    </p>
+    {% endfor %}
+{% endblock %}

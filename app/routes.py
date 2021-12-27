@@ -53,7 +53,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you registered a new user!')
-        return redirect(url_for('index'))
+        return redirect(url_for('users_list'))
     return render_template('register.html', title='Register', form=form)
 
 
@@ -89,3 +89,9 @@ def create_question():
 def questions_list():
     questions = Question.query.all()
     return render_template('questions_list.html', questions=questions)
+
+
+@app.route('/users_list')
+def users_list():
+    users = User.query.all()
+    return render_template('users_list.html', users=users)
