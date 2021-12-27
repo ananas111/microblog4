@@ -2,7 +2,9 @@ from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from app import login
+from app import login, admin
+from flask_admin.contrib.sqla import ModelView
+
 
 
 @login.user_loader
@@ -35,3 +37,7 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Post, db.session))
