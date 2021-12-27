@@ -11,6 +11,7 @@ def load_user(id):
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -39,8 +40,52 @@ class Question(db.Model):
     category = db.Column(db.String(128))
 
     def __repr__(self):
-        return f"{self.short_description}"
+        return f"{self.question_field}"
+
+
+interview_user = db.Table('interview_user',
+                          db.Column('users_id', db.ForeignKey('users.id'), primary_key=True),
+                          db.Column('interview_id', db.ForeignKey('interviews.id'), primary_key=True)
+                          )
+
+interview_question = db.Table('interview_question',
+                              db.Column('question_id', db.ForeignKey('questions.id'), primary_key=True),
+                              db.Column('interview_id', db.ForeignKey('interviews.id'), primary_key=True)
+                              )
+
+
+class Interview(db.Model):
+    __tablename__ = "interviews"
+
+    id = db.Column(db.Integer, primary_key=True)
+    applicant = db.Column(db.String)
+    questions_list = db.relationship('Question', secondary=interview_question, lazy='subquery',
+                                     backref=db.backref('interviews', lazy=True))
+    users_list = db.relationship('User', secondary=interview_user, lazy='subquery',
+                                 backref=db.backref('interviews', lazy=True))
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"{self.applicant}"
+
+
+class Grade(db.Model):
+    __tablename__ = 'grades'
+
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
+    question = db.relationship("Question", backref="grades")
+    interviewer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    interviewer = db.relationship("User", backref="grades")
+    interview_id = db.Column(db.Integer, db.ForeignKey('interviews.id'))
+    interview = db.relationship("Interview", backref="grades")
+    grade = db.Column(db.Integer, nullable=True)
+
+    def __repr__(self):
+        return f"{self.interviewer} gives {self.applicant} {self.grade} for question {self.question}"
 
 
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Question, db.session))
+admin.add_view(ModelView(Interview, db.session))
+admin.add_view(ModelView(Grade, db.session))

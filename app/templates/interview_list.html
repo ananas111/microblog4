@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Interview list</h1>
+    <hr>
+    {% for i in interviews %}
+    <p>
+    {{ i.date }} : <b>{{ i.applicant }}</b>
+    </p>
+    {% endfor %}
+{% endblock %}
