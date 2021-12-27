@@ -16,7 +16,10 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
     password_hash = db.Column(db.String(128))
+    is_admin = db.Column(db.Boolean(False))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __repr__(self):
@@ -39,5 +42,19 @@ class Post(db.Model):
         return '<Post {}>'.format(self.body)
 
 
+class Question(db.Model):
+    __tablename__ = "questions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    question_field = db.Column(db.Text)
+    answer = db.Column(db.String(64))
+    max_grade = db.Column(db.Integer)
+    category = db.Column(db.String(128))
+
+    def __repr__(self):
+        return f"{self.short_description}"
+
+
+
 admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Post, db.session))
+admin.add_view(ModelView(Question, db.session))
