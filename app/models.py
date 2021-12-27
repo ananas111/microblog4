@@ -29,6 +29,13 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @staticmethod
+    def create_list():
+        users_list = []
+        for user in User.query.all():
+            users_list.append((f"{user.id}", f"{user.username}"))
+        return users_list
+
 
 class Question(db.Model):
     __tablename__ = "questions"
@@ -41,6 +48,13 @@ class Question(db.Model):
 
     def __repr__(self):
         return f"{self.question_field}"
+
+    @staticmethod
+    def create_list():
+        questions_list = []
+        for question in Question.query.all():
+            questions_list.append((f"{question.id}", f"{question.question_field}"))
+        return questions_list
 
 
 interview_user = db.Table('interview_user',
@@ -67,6 +81,13 @@ class Interview(db.Model):
 
     def __repr__(self):
         return f"{self.applicant}"
+
+    @staticmethod
+    def create_list():
+        interviews_list = []
+        for interview in Interview.query.all():
+            interviews_list.append((f"{interview.id}", f"{interview.applicant}"))
+        return interviews_list
 
 
 class Grade(db.Model):

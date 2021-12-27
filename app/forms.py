@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, \
+    SelectMultipleField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Email
-from app.models import User
+from app.models import User, Question
 
 
 class LoginForm(FlaskForm):
@@ -39,3 +40,21 @@ class QuestionForm(FlaskForm):
     category = StringField("Category", validators=[DataRequired()])
     submit = SubmitField("Add")
 
+
+class InterviewForm(FlaskForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    applicant = StringField('Applicant', validators=[DataRequired()])
+    questions_list = SelectMultipleField("Choose questions", choices=Question.create_list())
+    users_list = SelectMultipleField("Choose interviewers", choices=User.create_list())
+    date = DateTimeField("Chose date and time of interview", format='%d.%m.%Y %H:%M')
+    submit = SubmitField("Submit")
+
+    @classmethod
+    def choice(cls):
+        form = cls()
+        form.questions_list.choices = Question.create_list()
+        form.users_list.choices = User.create_list()
+        return form

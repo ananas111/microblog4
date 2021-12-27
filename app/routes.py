@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, QuestionForm
+from app.forms import LoginForm, RegistrationForm, QuestionForm, InterviewForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Question, Interview, interview_user
+from app.models import User, Question, Interview, Grade
 from werkzeug.urls import url_parse
 
 
@@ -97,3 +97,34 @@ def questions_list():
 def users_list():
     users = User.query.all()
     return render_template('users_list.html', users=users)
+
+
+@app.route('/create_interview', methods=["GET", "POST"])
+def create_interview():
+    if current_user.is_authenticated:
+        form = InterviewForm().choice()
+        if form.validate_on_submit():
+            questions_list = []
+            users_list = []
+            for question_id in form.questions_list.data:
+                question = Question.query.filter_by(id=question_id).first()
+                questions_list.append(question)
+            for user_id in form.users_list.data:
+                user = User.query.filter_by(id=user_id).first()
+                users_list.append(user)
+            interview = Interview(applicant=form.applicant.data, questions_list=questions_list,
+                                  users_list=users_list, date=form.date.data)
+            interview_grade = [interview]
+            for user in users_list:
+                for question in questions_list:
+                    grade = Grade(question=question, interviewer=user, interview=interview)
+                    interview_grade.append(grade)
+            db.session.add_all(interview_grade)
+            db.session.commit()
+            flash('Congratulations, you created an interview!')
+            return redirect(url_for('interview_list'))
+        return render_template('create_interview.html', form=form)
+    else:
+        flash('Error!')
+        return render_template('index.html')
+
