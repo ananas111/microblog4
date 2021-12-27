@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, QuestionForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Question
 from werkzeug.urls import url_parse
 
 
@@ -57,17 +57,17 @@ def admin():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(username=form.username.data, email=form.email.data, first_name=form.first_name.data,
+                    last_name=form.last_name.data, is_admin=form.is_admin.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
+        flash('Congratulations, you registered a new user!')
+        return redirect(url_for('index'))
     return render_template('register.html', title='Register', form=form)
 
 
@@ -80,3 +80,19 @@ def user(username):
         {'author': user, 'body': 'Test post #2'}
     ]
     return render_template('user.html', user=user, posts=posts)
+
+
+@app.route('/create-question', methods=["GET", "POST"])
+@login_required
+def create_question():
+    form = QuestionForm()
+    if form.validate_on_submit():
+        question = Question(question_field=form.question_field.data,
+                            answer=form.answer.data,
+                            max_grade=form.max_grade.data,
+                            category=form.category.data
+                            )
+        db.session.add(question)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('create_question.html', form=form)

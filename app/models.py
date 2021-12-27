@@ -5,8 +5,6 @@ from flask_login import UserMixin
 from app import login, admin
 from flask_admin.contrib.sqla import ModelView
 
-
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -20,7 +18,6 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(64))
     password_hash = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean(False))
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -30,16 +27,6 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    def __repr__(self):
-        return '<Post {}>'.format(self.body)
 
 
 class Question(db.Model):
@@ -53,7 +40,6 @@ class Question(db.Model):
 
     def __repr__(self):
         return f"{self.short_description}"
-
 
 
 admin.add_view(ModelView(User, db.session))
