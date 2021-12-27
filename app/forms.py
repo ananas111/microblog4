@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextA
     SelectMultipleField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Email
 from app.models import User, Question
+from datetime import datetime
 
 
 class LoginForm(FlaskForm):
@@ -49,7 +50,8 @@ class InterviewForm(FlaskForm):
     applicant = StringField('Applicant', validators=[DataRequired()])
     questions_list = SelectMultipleField("Choose questions", choices=Question.create_list())
     users_list = SelectMultipleField("Choose interviewers", choices=User.create_list())
-    date = DateTimeField("Chose date and time of interview", format='%d.%m.%Y %H:%M')
+    date = DateTimeField("Chose date and time of interview in format '%d.%m.%Y %H:%M'", format='%d.%m.%Y %H:%M',
+                         default=datetime.utcnow)
     submit = SubmitField("Submit")
 
     @classmethod

@@ -18,6 +18,7 @@
               <a href="{{ url_for('register') }}">Register new user</a>
               <a href="{{ url_for('create_question') }}">Create question</a>
               <a href="{{ url_for('interview_list') }}">All interviews</a>
+              <a href="{{ url_for('create_interview') }}">Create interview</a>
                     {% if current_user.is_admin %}
               <a href="{{ url_for('admin') }}">Admin</a>
                 {% else %} {% endif %}
