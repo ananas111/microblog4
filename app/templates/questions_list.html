@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Questions list</h1>
+    <hr>
+    {% for q in questions %}
+    <p>
+    {{ q.id }} : <b>{{ q.question_field }}</b>
+    </p>
+    {% endfor %}
+{% endblock %}

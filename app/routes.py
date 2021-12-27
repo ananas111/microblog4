@@ -10,21 +10,7 @@ from werkzeug.urls import url_parse
 @app.route('/index')
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        },
-        {
-            'author': {'username': 'Ипполит'},
-            'body': 'Какая гадость эта ваша заливная рыба!!'
-        }
-    ]
-    return render_template("index.html", title='Home Page', posts=posts)
+    return render_template("index.html", title='Home Page')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -94,5 +80,12 @@ def create_question():
                             )
         db.session.add(question)
         db.session.commit()
-        return redirect(url_for('index'))
+        flash('Congratulations, you added a new question!')
+        return redirect(url_for('questions_list'))
     return render_template('create_question.html', form=form)
+
+
+@app.route('/questions_list')
+def questions_list():
+    questions = Question.query.all()
+    return render_template('questions_list.html', questions=questions)
