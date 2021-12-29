@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Give your grade for a question "{{question.question_field}}"</h1>
+    <h4>Maximum grade is {{question.max_grade}}</h4>
+<br>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.grade_field.label }}<br>
+            {{ form.grade_field }}<br>
+            {% for error in form.grade_field.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+
+{% endblock %}
