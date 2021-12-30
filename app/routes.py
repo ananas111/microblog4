@@ -80,11 +80,8 @@ def interview_list():
 def create_question():
     form = QuestionForm()
     if form.validate_on_submit():
-        question = Question(question_field=form.question_field.data,
-                            answer=form.answer.data,
-                            max_grade=form.max_grade.data,
-                            category=form.category.data
-                            )
+        question = Question(question_field=form.question_field.data, answer=form.answer.data,
+                            max_grade=form.max_grade.data, category=form.category.data)
         db.session.add(question)
         db.session.commit()
         flash('Congratulations, you added a new question!')
@@ -142,12 +139,7 @@ def give_grade_form():
         question = Question.query.filter_by(id=form.questions_list.data).first()
         user = User.query.filter_by(id=form.users_list.data).first()
         interview = Interview.query.filter_by(id=form.interviews.data).first()
-        grade = Grade(
-            interviewer=user,
-            question=question,
-            interview=interview,
-            grade=0
-        )
+        grade = Grade(interviewer=user, question=question, interview=interview, grade=0)
         db.session.add(grade)
         db.session.commit()
         return redirect('/index')

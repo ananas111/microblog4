@@ -5,7 +5,10 @@
     <hr>
     {% for i in interviews %}
     <p>
-    {{ i.date }} : <b>{{ i.applicant }}</b>
-    </p>
+        {{ i.id }}.{{ i.date }} : <b>{{ i.applicant }} </b>
+        {% for question in i.questions_list %}
+
+        <a href="{{ url_for('grade_for_question', id = i.id, question_id = question.id) }}" class="href">{{ question.id }}: {{ question.question_field }}</a>
+        {% endfor %}
     {% endfor %}
 {% endblock %}

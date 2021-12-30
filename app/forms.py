@@ -78,6 +78,6 @@ class GradeForm(FlaskForm):
 
 
 class GradeQuestionForm(FlaskForm):
-    grades_list = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10)]
+    grades_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     grade_field = SelectField("Give a grade to the answer", choices=grades_list)
     submit = SubmitField('Submit')
